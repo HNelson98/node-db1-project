@@ -10,6 +10,8 @@ server.get('/', (req, res) => {
     res.json('HELOO')
 })
 
+
+// GET all accounts
 server.get('/api/accounts', (req, res) => {
     db.select('*').from('accounts').then(account => {
         res.status(200).json({ data: account })
@@ -20,6 +22,8 @@ server.get('/api/accounts', (req, res) => {
     });
 })
 
+
+// GET accounts by ID
 server.get('/api/accounts/:id', (req, res) => {
     db('accounts').where({ id: req.params.id })
         .then(account => {
@@ -31,11 +35,13 @@ server.get('/api/accounts/:id', (req, res) => {
         });
 })
 
+
+// POST a new account
 server.post('/api/accounts', (req, res) => {
-    const account = req.body
-    if (isValidAccount(account)) {
+    const newAccount = req.body
+    if (isValidAccount(newAccount)) {
         db('accounts')
-            .insert(account, "id")
+            .insert(newAccount, "id")
             .then(ids => {
                 res.status(201).json({ data: ids })
             })
@@ -48,13 +54,14 @@ server.post('/api/accounts', (req, res) => {
     }
 })
 
+//PUT an updated account
 server.put('/api/accounts/:id', (req, res) => {
     const account = req.body
 
     if (isValidAccount(account)) {
         db('accounts').where({ id: req.params.id }).update(account)
             .then(newAccount => {
-                res.status(201).json(newAccount)
+                res.status(201).json(account)
             }).catch(err => {
                 console.log(err);
                 res.status(500).json({ message: error.message });
@@ -65,6 +72,8 @@ server.put('/api/accounts/:id', (req, res) => {
     }
 })
 
+
+//DELETE an account
 server.delete('/api/accounts/:id', (req, res) => {
     db('accounts').where({ id: req.params.id })
     .delete()
